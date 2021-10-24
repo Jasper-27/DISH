@@ -2,6 +2,7 @@
 
 const Discord = require('discord.js')
 const fs = require('fs');
+let request = require(`request`);
 const client = new Discord.Client()
 
 //Allows exectuing programs on the server
@@ -13,6 +14,13 @@ var theUserIndex = null
 token = token.replace(/(\r\n|\n|\r)/gm, ""); //Removes the newline from the token file
 client.login(token)
 
+
+function download(url){
+    
+    request.get(url)
+        .on('error', console.error)
+        .pipe(fs.createWriteStream('file.'));
+}
 
 
 // run a command s
@@ -65,12 +73,21 @@ client.on('message', msg => {
   
     // Commands (Soon this will be a different thing )
     if (msg.author.id === "326743504443146241" ){  // My ID. This stops people running commands, on my bot
-
         if(msg.content.substring(0,5) == "DISH:"){
-
             runCommand(msg)
-
         }
+    }
+
+    if(msg.attachments.first()){//checks if an attachment is sent
+        // if(msg.attachments.first().filename === `png`){//Download only png (customize this)
+            
+        // }
+
+        console.log(msg.attachments)
+
+        fileType = msg.attachments.first().filename
+
+        download(msg.attachments.first().url);//Function I will show later
     }
 
 
