@@ -37,10 +37,11 @@ async def on_message(message):
 
         print("Command: " + command)
 
+
+        # just running "cd" doesn't change the wd or the pythin script
         if command.startswith("cd"):
-            path = command.split("cd")[1]
-            print(path)
-            # os.chdir(os.path.join(os.getcwd(), path)
+            path = command.split("cd ")[1]
+            os.chdir(path)
             return 
             
 
