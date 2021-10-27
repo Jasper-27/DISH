@@ -2,13 +2,14 @@
 
 import os
 import subprocess
-
 import discord
 
 #Getting the users token
 f = open("token", "r")
 token = f.read()
 f.close()
+
+os.chdir(os.path.expanduser('~'))
 
 
 client = discord.Client()
@@ -20,23 +21,28 @@ async def on_ready():
 @client.event
 async def on_message(message):
 
-    if message.content.startswith("DISH: "):
+
+    if message.content.startswith("DISH GETFILE"):
+        await message.channel.send ("Getting file")
+        filePath = message.content[13:]
+
+        try: 
+            await message.channel.send(file=discord.File(filePath))
+        except: 
+            await message.channel.send("Error retrieving file: " + filePath)
+        return 
+
+    if message.content.startswith("DISH!"):
         command  = message.content[6:]
 
         print("Command: " + command)
 
-
-        if command.startswith("GET_FILE: "):
-            await message.channel.send ("Getting file")
-            filePath = command[10:]
-
-            try: 
-                await message.channel.send(file=discord.File(filePath))
-            except: 
-                await message.channel.send("Error retrieving file: " + filePath)
-            
-
+        if command.startswith("cd"):
+            path = command.split("cd")[1]
+            print(path)
+            # os.chdir(os.path.join(os.getcwd(), path)
             return 
+            
 
         # I wan't to find a better way of doing this. It has some issues 
         result = subprocess.check_output(command, shell=True, text=True)
@@ -44,8 +50,10 @@ async def on_message(message):
         if result == "": 
             await message.channel.send("Command produced no output")
             return 
-            
+        
+        
         await message.channel.send(result)
+        return
 
        
 
