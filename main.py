@@ -37,7 +37,9 @@ async def on_message(message):
         return 
 
     if message.content == ("dish report"):
-        await message.channel.send(id) 
+        reportString = "=========" + "\n" + "ID: " + str(id) + "\n" + "========="
+        await message.channel.send(reportString) 
+
 
 
     if message.content.startswith("!"):
