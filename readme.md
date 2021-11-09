@@ -5,7 +5,7 @@ So this project is an interesting one. It started off as a fun way to control my
 ## Setting it up
 This project is VERY early on. But at the moment all you will need is 
 - A valid discord bot token. In a file called "token" 
-- Discord.py 
+- The discord python library
 - A discord server, with the discord tokens bot added to it 
 
 ## Oooh, I could use this for illegal shit. 
