@@ -28,3 +28,20 @@ Yes probably. Please don't though.
 
 ## Big ol' issues
 - If someone was to see they were infected, they could just take over the other nodes by changing what messages their node sent
+
+## Cool future plans 
+
+### Mother ship 
+So this would change how the bot works, instead of the user interacting with Discord to send commands, the user would interact with a console application to give commands. Discord would just be the middle man. There would be two types of bots; nodes, motherships. 
+
+Advantages:
+- The mothership could store information about the nodes, meaning that the user could do some qurires without having to send commands to the node. 
+- The mothership could be used to schedule when commands are sent
+- The mothership could keep track of nodes coming and going 
+- The discord chat would look cool, and random (would probably encode the commands)
+- would mean a comprimised node couldn't control over nodes (as a mothership wouldn't take commands from a node)
+
+Disadvantages: 
+- Work 
+- added complexity makes most projects bad 
+- People are scared of the command line
