@@ -25,3 +25,6 @@ Yes probably. Please don't though.
     - When you put files in, you probably want to get files out. 
     - would make sense to have this for files and folders. 
 
+
+## Big ol' issues
+- If someone was to see they were infected, they could just take over the other nodes by changing what messages their node sent
