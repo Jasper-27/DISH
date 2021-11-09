@@ -11,6 +11,11 @@ This project is VERY early on. But at the moment all you will need is
 ## Oooh, I could use this for illegal shit. 
 Yes probably. Please don't though. 
 
+## What operating systems has this been tested with
+- MacOs (This is what i am using to build most of it)
+- Windows 
+- Ubuntu (will probably be compatible with most distros)
+
 ## Things that need to get done 
 - Need to make a "deploy" script 
     - So it's unlikely that a target would have discord.py pre-installed. And setting up Pip to do that would be a ball ache. So i need to make a script, that the user can run when the code is on their own machine, to get it all set up.  
