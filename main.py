@@ -25,11 +25,14 @@ async def on_ready():
 @client.event
 async def on_message(message):
     
+    # Bit off fluff to see the message in the terminal 
     print("\n=======   ")
     print("Message: ")
     print(message.content)
     print("++++++++ \n")
 
+
+    # Checks if this is the node the command is meant for 
     idString = "[" + id + "]! "
     if message.content.startswith(idString): 
 
@@ -57,6 +60,10 @@ async def on_message(message):
         await message.channel.send(result)
         return
 
+
+
+
+    # Get file by path. (sends the file to the chat)
     if message.content.startswith("DISH GETFILE"):
         await message.channel.send ("Getting file")
         filePath = message.content[13:]
@@ -73,6 +80,7 @@ async def on_message(message):
 
 
 
+    # Standard running of commands on all nodes 
     if message.content.startswith("!"):
         command  = message.content[2:]
 
@@ -100,7 +108,6 @@ async def on_message(message):
        
 
 
-        
 
     # no need to d anything with the bots own messages 
     if message.author == client.user:
