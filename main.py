@@ -35,11 +35,11 @@ async def runCommand(message, command):
     result = subprocess.check_output(command, shell=True, text=True)
 
     if result == "": 
-        await message.channel.send("Command produced no output")
+        await message.channel.send("```\nCommand produced no output```")
         return 
         
         
-    await message.channel.send(result)
+    await message.channel.send("```\n" + result + "\n```") # The \n ``` formats it as code 
     return
 
 
@@ -87,7 +87,7 @@ async def on_message(message):
     # Report in to the sever, so the user can see what nodes are online 
     if message.content == ("dish report"):
 
-        reportString = "=========" + "\n" + "ID: " + str(id) + "\n" + str(os.uname()) + "\n" + "========="
+        reportString = "```\n=========" + "\n" + "ID: " + str(id) + "\n" + str(os.uname()) + "\n" + "=========```"
 
         await message.channel.send(reportString) 
 
