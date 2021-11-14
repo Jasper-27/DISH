@@ -13,10 +13,36 @@ f = open("token", "r")
 token = f.read()
 f.close()
 
-os.chdir(os.path.expanduser('~'))
-
+# Set default dir as users home 
+os.chdir(os.path.expanduser('~')) 
 
 client = discord.Client()
+
+async def runCommand(message, command):
+    print(command)
+
+    print("Command: " + command)
+
+
+    # just running "cd" doesn't change the wd or the pythin script
+    if command.startswith("cd"):
+        path = command.split("cd ")[1]
+        os.chdir(path)
+        return 
+            
+
+    # I wan't to find a better way of doing this. It has some issues 
+    result = subprocess.check_output(command, shell=True, text=True)
+
+    if result == "": 
+        await message.channel.send("Command produced no output")
+        return 
+        
+        
+    await message.channel.send(result)
+    return
+
+
 
 @client.event
 async def on_ready():
@@ -24,6 +50,12 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+
+
+    # no need to d anything with the bots own messages 
+    if message.author == client.user:
+        return
+
     
     # Bit off fluff to see the message in the terminal 
     print("\n=======   ")
@@ -37,30 +69,8 @@ async def on_message(message):
     if message.content.startswith(idString): 
 
         command = message.content.split(idString)[1]
-        print(message.content)
-        print(command)
-
-        ### This bit is repeated code, and needs to be fixed 
-
-        # just running "cd" doesn't change the wd or the pythin script
-        if command.startswith("cd"):
-            path = command.split("cd ")[1]
-            os.chdir(path)
-            return 
-        
-
-        # I wan't to find a better way of doing this. It has some issues 
-        result = subprocess.check_output(command, shell=True, text=True)
-
-        if result == "": 
-            await message.channel.send("Command produced no output")
-            return 
-        
-        
-        await message.channel.send(result)
-        return
-
-
+ 
+        runCommand(command)
 
 
     # Get file by path. (sends the file to the chat)
@@ -89,38 +99,10 @@ async def on_message(message):
 
         print("Command: " + command)
 
-
-        # just running "cd" doesn't change the wd or the pythin script
-        if command.startswith("cd"):
-            path = command.split("cd ")[1]
-            os.chdir(path)
-            return 
-            
-
-        # I wan't to find a better way of doing this. It has some issues 
-        result = subprocess.check_output(command, shell=True, text=True)
-
-        if result == "": 
-            await message.channel.send("Command produced no output")
-            return 
-        
-        
-        await message.channel.send(result)
-        return
-
+        await runCommand(message, command)
+        return 
        
 
-
-
-    # no need to d anything with the bots own messages 
-    if message.author == client.user:
-        return
-
-    if message.content == 'test':
-        response = "Hello World"
-        await message.channel.send(response)
-
-   
     # Downloads any files that are sent, and stores them in the downloads folder 
     if str(message.attachments) != "[]": # Checks if there is an attachment on the message
         print(message)
