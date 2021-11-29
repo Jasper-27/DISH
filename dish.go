@@ -99,13 +99,10 @@ func runCommand(command string) (outString string, errorMessage string) {
 	errorMessage = ""
 
 	if runtime.GOOS == "windows" {
-		shell = "PS"
+		shell = "powershell.exe"
 	} else {
 		shell = "sh"
 	}
-
-	p("Command: " + command)
-	p("Shell: " + shell)
 
 	out, err := exec.Command(shell, "-c", command).Output()
 	if err != nil {
