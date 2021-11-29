@@ -4,14 +4,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"os/signal"
+	"runtime"
 	"strings"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-// var botID string
+//global stuff for shortcuts
+var p = fmt.Println
 
 func main() {
 
@@ -62,6 +65,58 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "testSuccesfull")
 	}
 
+	// run command on all nodes
+	// firstCharacter := m.Content[0:2]
+
+	if strings.HasPrefix(m.Content, "! ") {
+		command_string := m.Content[2:len(m.Content)] // get everything after the '! '
+		fmt.Println(command_string)
+
+		out, errorMessage := runCommand(command_string)
+
+		fmt.Println(out)
+		fmt.Println(errorMessage)
+
+		if errorMessage != "" {
+			fmt.Println(errorMessage)
+
+			s.ChannelMessageSend(m.ChannelID, errorMessage)
+
+			return
+		}
+
+		s.ChannelMessageSend(m.ChannelID, string(out))
+
+	}
+
 	fmt.Println(m.Author.Username, ": ", m.Content)
+
+}
+
+func runCommand(command string) (outString string, errorMessage string) {
+
+	var shell string
+	errorMessage = ""
+
+	if runtime.GOOS == "windows" {
+		shell = "PS"
+	} else {
+		shell = "sh"
+	}
+
+	p("Command: " + command)
+	p("Shell: " + shell)
+
+	out, err := exec.Command(shell, "-c", command).Output()
+	if err != nil {
+		fmt.Println(err.Error())
+		errorMessage = err.Error()
+
+		return
+	}
+
+	outString = string(out)
+
+	return
 
 }
