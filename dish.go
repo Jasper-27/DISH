@@ -72,10 +72,10 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		if errorMessage != "" {
 			p(errorMessage)
-			s.ChannelMessageSend(m.ChannelID, errorMessage)
+			s.ChannelMessageSend(m.ChannelID, "```"+errorMessage+"```")
 			return
 		}
-		s.ChannelMessageSend(m.ChannelID, string(out))
+		s.ChannelMessageSend(m.ChannelID, "```"+string(out)+"```")
 	}
 
 	p(m.Author.Username, ": ", m.Content)
