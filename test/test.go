@@ -5,7 +5,6 @@ import (
 	"net"
 	"os/exec"
 	"runtime"
-	"strings"
 )
 
 func main() {
@@ -25,9 +24,9 @@ func main() {
 
 	// Unique IDs
 
-	mac, _ := getMacAddr()
+	// mac, _ := getMacAddr()
 
-	fmt.Println(strings.Join(mac[:], " "))
+	// fmt.Println(strings.Join(mac[:], " "))
 
 }
 

