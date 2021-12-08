@@ -15,6 +15,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/google/uuid"
 )
 
 //global stuff for shortcuts
@@ -167,6 +168,13 @@ func runCommand(command string) (outString string, errorMessage string) {
 }
 
 func generateGUID() string {
+
+	// MacOS doesn't seem to like the hardware addr GUID thing. So guess we going random number
+	if runtime.GOOS == "darwin" {
+		id := uuid.New()
+		return id.String()
+	}
+
 	// gets the machines network interfaces
 	ifas, err := net.Interfaces()
 	if err != nil {

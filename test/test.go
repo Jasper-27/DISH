@@ -5,6 +5,7 @@ import (
 	"net"
 	"os/exec"
 	"runtime"
+	"strings"
 )
 
 func main() {
@@ -27,6 +28,10 @@ func main() {
 	// mac, _ := getMacAddr()
 
 	// fmt.Println(strings.Join(mac[:], " "))
+
+	fmt.Println(generateGUID())
+
+	fmt.Println(getMacAddr())
 
 }
 
@@ -63,4 +68,20 @@ func getMacAddr() (string, error) {
 	address := ifas[0].HardwareAddr.String() // gets the MAC address from the first network interface
 
 	return address, nil
+}
+
+func generateGUID() string {
+
+	// gets the machines network interfaces
+	ifas, err := net.Interfaces()
+	if err != nil {
+		fmt.Println(err)
+
+		return ""
+	}
+
+	address := ifas[0].HardwareAddr.String()       // gets the MAC(hardware) address from the first network interface
+	address = strings.ReplaceAll(address, ":", "") // removes the : so it's easier to copy and paste
+
+	return string(address)
 }
