@@ -152,6 +152,28 @@ func runCommand(command string) (outString string, errorMessage string) {
 		shell = "sh"
 	}
 
+	// Change directory
+	if strings.HasPrefix(command, "cd ") {
+
+		dir := command[3:] // get the first three chars
+
+		os.Chdir(dir)
+
+		p(dir)
+
+		// run command, and if it causes an error create an error
+		out, err := exec.Command(shell, "-c", "pwd").Output()
+		if err != nil {
+			p(err.Error())
+			errorMessage = err.Error()
+
+			return
+		}
+
+		outString = string(out)
+		return
+	}
+
 	// run command, and if it causes an error create an error
 	out, err := exec.Command(shell, "-c", command).Output()
 	if err != nil {
