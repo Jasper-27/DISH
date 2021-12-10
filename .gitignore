@@ -2,3 +2,5 @@ token
 node_modules/*
 .DS_Store
 downloads/*
+dish
+dish.exe
