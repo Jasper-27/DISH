@@ -136,6 +136,7 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	}
 
+	// Download file
 	if strings.ToLower(m.Content) == "download" {
 		if m.Attachments != nil {
 			p(m.Attachments)
@@ -152,6 +153,25 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			}
 
+		}
+	}
+
+	// Send file to chat
+	if strings.HasPrefix(m.Content, "get-file"+": ") {
+
+		path := m.Content[len("get-file: "):len(m.Content)]
+
+		// creating the IO reader, for sending
+		file, err := os.Open(path)
+		if err != nil {
+			s.ChannelMessageSend(m.ChannelID, "There was an error opening the file")
+		}
+
+		// Sending the file to the channel
+		_, err = s.ChannelFileSend(m.ChannelID, path, file)
+		if err != nil {
+			fmt.Println(err)
+			s.ChannelMessageSend(m.ChannelID, "There was an error sending the file")
 		}
 	}
 
