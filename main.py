@@ -112,7 +112,7 @@ async def on_message(message):
 
     # Standard running of commands on all nodes 
     if message.content.startswith("!"):
-        command  = message.content[2:]
+        command  = message.content[1:]
 
         print("Command: " + command)
 
