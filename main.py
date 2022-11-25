@@ -3,6 +3,8 @@
 import os
 import subprocess
 import discord
+from datetime import datetime
+
 
 import uuid #used for checking unique hosts 
 
@@ -59,20 +61,20 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    now = datetime.now() # get's the current time 
 
 
     # no need to d anything with the bots own messages 
     if message.author == client.user:
         return
 
-    
-    # Bit off fluff to see the message in the terminal 
-    print("\n=======   ")
-    print("Message: ")
-    print(message.content)
-    print(hostname + ": ")
-
-    print("++++++++ \n")
+  
+    # Fluff to see message in terminal 
+    print("=============================================================================")
+    print("Time:    ", now.strftime("%H:%M:%S"))
+    print("Author:  ", message.author)
+    print("Content: ", message.content)
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=")
 
 
     # Checks if this is the node the command is meant for 
@@ -128,7 +130,6 @@ async def on_message(message):
   
         await message.attachments[0].save(fp="downloads/{}".format(filename)) # saves the file
         await message.channel.send("File recieved")
-
 
     
 # run the bot 
